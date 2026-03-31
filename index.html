@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOST IN COMPLEX — Visual Works</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/97/three.min.js"></script>
+
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+  <!-- Three.js background canvas (user's smoke script をここに接続) -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ============================================================
+       SIDE PROGRESS RAIL
+  ============================================================ -->
+  <aside class="progress-rail" aria-label="Scroll progress">
+    <div class="progress-rail__label">
+      <span>S</span><span>C</span><span>R</span><span>O</span><span>L</span><span>L</span>
+    </div>
+    <div class="progress-rail__track">
+      <div class="progress-rail__fill" id="progressFill"></div>
+      <div class="progress-rail__orb" id="progressOrb"></div>
+    </div>
+    <div class="progress-rail__index">
+      <span class="progress-rail__current" id="progressCurrent">01</span>
+      <span class="progress-rail__sep">/</span>
+      <span class="progress-rail__total">05</span>
+    </div>
+    <div class="progress-rail__ticks" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section class="hero" id="hero">
+
+    <!-- Ruled lines decoration -->
+    <div class="hero__ruled" aria-hidden="true">
+      <div class="hero__ruled-line hero__ruled-line--h1"></div>
+      <div class="hero__ruled-line hero__ruled-line--h2"></div>
+      <div class="hero__ruled-line hero__ruled-line--v1"></div>
+    </div>
+
+    <!-- Corner labels -->
+    <div class="hero__coord hero__coord--tl" aria-hidden="true">
+      <span>N 35°41′22″</span>
+      <span>E 139°41′30″</span>
+    </div>
+    <div class="hero__coord hero__coord--br" aria-hidden="true">
+      <span>SYSTEM // ONLINE</span>
+      <span>SIG — 2025.∞</span>
+    </div>
+
+    <div class="hero__inner">
+      <div class="hero__eyebrow js-fade-up" data-delay="0">
+        <span class="hero__eyebrow-line"></span>
+        <span class="hero__eyebrow-text">VISUAL PORTFOLIO &nbsp;—&nbsp; DREAMCORE WORKS</span>
+        <span class="hero__eyebrow-line hero__eyebrow-line--r"></span>
+      </div>
+
+      <div class="hero__title-wrap">
+        <div class="hero__title-bg" aria-hidden="true" id="heroBgText">COMPLEX</div>
+        <h1 class="hero__title">
+          <span class="hero__title-row hero__title-row--a js-fade-up" data-delay="100">Lost in</span>
+          <span class="hero__title-row hero__title-row--b js-fade-up" data-delay="240">COMPLEX</span>
+        </h1>
+      </div>
+
+      <p class="hero__sub js-fade-up" data-delay="400">
+        <span class="hero__sub-em">Dreamcore</span> &nbsp;&middot;&nbsp; Experimental &nbsp;&middot;&nbsp; Visual Arts
+      </p>
+
+      <div class="hero__meta js-fade-up" data-delay="520">
+        <div class="hero__meta-item">
+          <span class="hero__meta-val">05</span>
+          <span class="hero__meta-key">WORKS</span>
+        </div>
+        <div class="hero__meta-divider"></div>
+        <div class="hero__meta-item">
+          <span class="hero__meta-val">4K</span>
+          <span class="hero__meta-key">RESOLUTION</span>
+        </div>
+        <div class="hero__meta-divider"></div>
+        <div class="hero__meta-item">
+          <span class="hero__meta-val">2025</span>
+          <span class="hero__meta-key">YEAR</span>
+        </div>
+      </div>
+
+      <a href="https://www.youtube.com/@Lost_in_COMPLEX" target="_blank" rel="noopener" class="hero__yt-btn js-fade-up"
+        data-delay="640">
+        <span class="hero__yt-btn-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+            <path
+              d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14c1.84.55 9.38.55 9.38.55s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z" />
+          </svg>
+        </span>
+        <span>YOUTUBE CHANNEL</span>
+        <svg class="hero__yt-btn-arrow" viewBox="0 0 16 16" fill="none" width="12" height="12">
+          <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </a>
+
+      <div class="hero__scroll-cue js-fade-up" data-delay="760">
+        <span class="hero__scroll-text">SCROLL TO EXPLORE</span>
+        <div class="hero__scroll-ticker">
+          <div class="hero__scroll-ticker-inner"></div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       GALLERY
+  ============================================================ -->
+  <section class="gallery" id="gallery">
+
+    <!-- Animated rule line (::before の代わりに実 DOM で管理) -->
+    <div class="gallery__rule" aria-hidden="true"></div>
+
+    <header class="gallery__header">
+      <div class="gallery__header-left">
+        <!-- <span class="gallery__chapter js-reveal">CHAPTER &mdash; 01</span> -->
+        <h2 class="gallery__heading js-reveal">Selected<br><em>Works</em></h2>
+      </div>
+      <div class="gallery__header-right js-reveal">
+        <p class="gallery__desc">
+          A curated collection of dreamcore video works.<br>
+          Each piece explores the boundary between<br>
+          reality and the subconscious.
+        </p>
+        <div class="gallery__header-rule"></div>
+      </div>
+    </header>
+
+    <!-- ======== CAROUSEL ======== -->
+    <div class="carousel" id="carousel">
+      <div class="carousel__viewport">
+
+        <!-- ======== WORK 01 ========
+             作品を追加する場合: この article ブロックをコピーして
+             data-index をインクリメントし、テキストと動画パスを変更。
+             carousel__dots にも <button> を 1 個追加してください。
+        -->
+
+        <article class="carousel__item active" data-index="0">
+          <div class="work-card">
+            <div class="work-card__perspective">
+              <div class="work-card__inner js-card-3d">
+
+                <!-- Glass/Video Layer (奥) -->
+                <div class="work-card__glass-wrap">
+
+                  <div class="work-card__video-layer">
+                    <video class="work-card__video work-card__video--a" src="./videos/work01_a.mp4" muted playsinline
+                      preload="auto">
+                    </video>
+                    <video class="work-card__video work-card__video--b" src="./videos/work01_b.mp4" muted playsinline
+                      preload="auto" style="opacity:0;">
+                    </video>
+                  </div>
+
+                  <div class="work-card__frosted"></div>
+                  <div class="work-card__scanlines"></div>
+                  <div class="work-card__glare"></div>
+
+                  <!-- HUD overlay -->
+
+                  <div class="work-card__hud" aria-hidden="true">
+                    <span class="work-card__corner work-card__corner--tl"></span>
+                    <span class="work-card__corner work-card__corner--tr"></span>
+                    <span class="work-card__corner work-card__corner--bl"></span>
+                    <span class="work-card__corner work-card__corner--br"></span>
+                    <span class="work-card__hud-rec">&#9679; REC</span>
+                    <span class="work-card__hud-idx">01 / 05</span>
+                  </div>
+
+                </div>
+
+                <!-- Text Panel (手前) -->
+                <div class="work-card__panel">
+                  <span class="work-card__num" aria-hidden="true">01</span>
+                  <div class="work-card__panel-body">
+                    <h3 class="work-card__title">地下鉄水族館</h3>
+                    <p class="work-card__meta">Metro Aquarium</p>
+                    <p class="work-card__desc">
+                      <!-- A journey through liminal spaces and forgotten memories.
+                      Blurring the boundary between dream and waking reality. -->
+                      宙を舞うクラゲ、ガラスをすり抜ける鮫。地下なのに不思議と明るい廃メトロ水族館。２０万回再生を突破した、代表作。
+                    </p>
+                    <div class="work-card__tags">
+                      <span>DREAMCORE</span>
+                      <span>AMBIENT</span>
+                      <span>LOOP</span>
+                    </div>
+                    <a class="work-card__link" href="https://www.youtube.com/watch?v=lfcQkQoj5zM" target="_blank"
+                      rel="noopener">
+                      <span>VIEW ON YOUTUBE</span>
+                      <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
+                        <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" />
+                      </svg>
+                    </a>
+                    <!-- サムネ画像: img/thumb_01a.jpg 等に差し替え -->
+                    <div class="work-card__thumbs">
+                      <div class="work-card__thumb" style="background-image:url('./images/thumb_01a.png')"></div>
+                      <div class="work-card__thumb" style="background-image:url('./images/thumb_01b.png')"></div>
+                      <div class="work-card__thumb" style="background-image:url('./images/thumb_01c.png')"></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ======== WORK 02 ======== -->
+        <article class="carousel__item" data-index="1">
+          <div class="work-card">
+            <div class="work-card__perspective">
+              <div class="work-card__inner js-card-3d">
+                <div class="work-card__glass-wrap">
+
+                  <div class="work-card__video-layer">
+                    <video class="work-card__video work-card__video--a" src="./videos/work02_a.mp4" muted playsinline
+                      preload="auto">
+                    </video>
+                    <video class="work-card__video work-card__video--b" src="./videos/work02_b.mp4" muted playsinline
+                      preload="auto" style="opacity:0;">
+                    </video>
+                  </div>
+
+                  <div class="work-card__frosted"></div>
+                  <div class="work-card__scanlines"></div>
+                  <div class="work-card__glare"></div>
+                  <div class="work-card__hud" aria-hidden="true">
+                    <span class="work-card__corner work-card__corner--tl"></span>
+                    <span class="work-card__corner work-card__corner--tr"></span>
+                    <span class="work-card__corner work-card__corner--bl"></span>
+                    <span class="work-card__corner work-card__corner--br"></span>
+                    <span class="work-card__hud-rec">&#9679; REC</span>
+                    <span class="work-card__hud-idx">02 / 05</span>
+                  </div>
+                </div>
+                <div class="work-card__panel">
+                  <span class="work-card__num" aria-hidden="true">02</span>
+                  <div class="work-card__panel-body">
+                    <h3 class="work-card__title">遊園地みたいな精神病院</h3>
+                    <p class="work-card__meta">Amusement mental hospital</p>
+                    <p class="work-card__desc">
+                      <!-- Transmissions from the in-between. Static and silence
+                      weave into something inexplicably familiar. -->
+                      観覧車や温泉がある、不思議な精神病院の世界。入院したら一生出られない？いや、出たくないのかも…
+                    </p>
+                    <div class="work-card__tags">
+                      <span>DREAMCORE</span><span>EXPLORE</span><span>LOOP</span>
+                    </div>
+                    <a class="work-card__link" href="https://www.youtube.com/watch?v=mZX2Xqb13xc" target="_blank"
+                      rel="noopener">
+                      <span>VIEW ON YOUTUBE</span>
+                      <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
+                        <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" />
+                      </svg>
+                    </a>
+                    <div class="work-card__thumbs">
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_02a.png')"></div>
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_02b.png')"></div>
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_02c.png')"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ======== WORK 03 ======== -->
+        <article class="carousel__item" data-index="2">
+          <div class="work-card">
+            <div class="work-card__perspective">
+              <div class="work-card__inner js-card-3d">
+                <div class="work-card__glass-wrap">
+
+                  <div class="work-card__video-layer">
+                    <video class="work-card__video work-card__video--a" src="./videos/work03_a.mp4" muted playsinline
+                      preload="auto">
+                    </video>
+                    <video class="work-card__video work-card__video--b" src="./videos/work03_b.mp4" muted playsinline
+                      preload="auto" style="opacity:0;">
+                    </video>
+                  </div>
+
+                  <div class="work-card__frosted"></div>
+                  <div class="work-card__scanlines"></div>
+                  <div class="work-card__glare"></div>
+                  <div class="work-card__hud" aria-hidden="true">
+                    <span class="work-card__corner work-card__corner--tl"></span>
+                    <span class="work-card__corner work-card__corner--tr"></span>
+                    <span class="work-card__corner work-card__corner--bl"></span>
+                    <span class="work-card__corner work-card__corner--br"></span>
+                    <span class="work-card__hud-rec">&#9679; REC</span>
+                    <span class="work-card__hud-idx">03 / 05</span>
+                  </div>
+                </div>
+                <div class="work-card__panel">
+                  <span class="work-card__num" aria-hidden="true">03</span>
+                  <div class="work-card__panel-body">
+                    <h3 class="work-card__title">通勤ウォータースライダー</h3>
+                    <p class="work-card__meta">Commuter water slide</p>
+                    <p class="work-card__desc">
+                      東京上空に突如現れた、巨大なウォータースライダー。これで通勤が快適になるかも…？
+                      <!-- Layers of forgotten afternoons. The texture of nostalgia
+                      rendered in light and dissolving shadow. -->
+                    </p>
+                    <div class="work-card__tags">
+                      <span>DREAMCORE</span><span>LIMINAL</span><span>THRILLING</span>
+                    </div>
+                    <a class="work-card__link" href="https://www.youtube.com/watch?v=PAkMhHxnQv4" target="_blank"
+                      rel="noopener">
+                      <span>VIEW ON YOUTUBE</span>
+                      <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
+                        <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" />
+                      </svg>
+                    </a>
+                    <div class="work-card__thumbs">
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_03a.png')"></div>
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_03b.png')"></div>
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_03c.png')"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ======== WORK 04 ======== -->
+        <article class="carousel__item" data-index="3">
+          <div class="work-card">
+            <div class="work-card__perspective">
+              <div class="work-card__inner js-card-3d">
+                <div class="work-card__glass-wrap">
+
+                  <div class="work-card__video-layer">
+                    <video class="work-card__video work-card__video--a" src="./videos/work04_a.mp4" muted playsinline
+                      preload="auto">
+                    </video>
+                    <video class="work-card__video work-card__video--b" src="./videos/work04_b.mp4" muted playsinline
+                      preload="auto" style="opacity:0;">
+                    </video>
+                  </div>
+
+                  <div class="work-card__frosted"></div>
+                  <div class="work-card__scanlines"></div>
+                  <div class="work-card__glare"></div>
+                  <div class="work-card__hud" aria-hidden="true">
+                    <span class="work-card__corner work-card__corner--tl"></span>
+                    <span class="work-card__corner work-card__corner--tr"></span>
+                    <span class="work-card__corner work-card__corner--bl"></span>
+                    <span class="work-card__corner work-card__corner--br"></span>
+                    <span class="work-card__hud-rec">&#9679; REC</span>
+                    <span class="work-card__hud-idx">04 / 05</span>
+                  </div>
+                </div>
+                <div class="work-card__panel">
+                  <span class="work-card__num" aria-hidden="true">04</span>
+                  <div class="work-card__panel-body">
+                    <h3 class="work-card__title">レトロな水上クルーズ</h3>
+                    <p class="work-card__meta">Taisho Retro Water Cruise</p>
+                    <p class="work-card__desc">
+                      <!-- Manufactured dreams and digital shadows.
+                      The uncanny valley of the subconscious rendered in light. -->
+                      水上ボートでレトロな世界を巡る、謎のアトラクション。ネオン街や光の帯をくぐり抜け、辿り着く先は…？
+                    </p>
+                    <div class="work-card__tags">
+                      <span>DREAMCORE</span><span>EXPLORE</span><span>AMBIENT</span>
+                    </div>
+                    <a class="work-card__link" href="https://www.youtube.com/watch?v=9GLD1fi5t5g" target="_blank"
+                      rel="noopener">
+                      <span>VIEW ON YOUTUBE</span>
+                      <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
+                        <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" />
+                      </svg>
+                    </a>
+                    <div class="work-card__thumbs">
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_04a.png')"></div>
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_04b.png')"></div>
+                      <div class="work-card__thumb" style="background-image:url('images/thumb_04c.png')"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ======== WORK 05 ======== -->
+        <article class="carousel__item" data-index="4">
+          <div class="work-card">
+            <div class="work-card__perspective">
+              <div class="work-card__inner js-card-3d">
+                <div class="work-card__glass-wrap">
+                  <div class="work-card__video-layer">
+                    <video class="work-card__video" data-src-1="video/work05_a.mp4" data-src-2="video/work05_b.mp4"
+                      muted playsinline preload="auto"></video>
+                  </div>
+                  <div class="work-card__frosted"></div>
+                  <div class="work-card__scanlines"></div>
+                  <div class="work-card__glare"></div>
+                  <div class="work-card__hud" aria-hidden="true">
+                    <span class="work-card__corner work-card__corner--tl"></span>
+                    <span class="work-card__corner work-card__corner--tr"></span>
+                    <span class="work-card__corner work-card__corner--bl"></span>
+                    <span class="work-card__corner work-card__corner--br"></span>
+                    <span class="work-card__hud-rec">&#9679; REC</span>
+                    <span class="work-card__hud-idx">05 / 05</span>
+                  </div>
+                </div>
+                <div class="work-card__panel">
+                  <span class="work-card__num" aria-hidden="true">05</span>
+                  <div class="work-card__panel-body">
+                    <h3 class="work-card__title">And More...</h3>
+                    <p class="work-card__meta">2025 &mdash; VOID</p>
+                    <p class="work-card__desc">
+                      まだまだたくさんの動画があります。続きは、YouTubeで…<br>
+
+                      An archive of the impossible. Fragments of places
+                      that never existed but somehow feel deeply remembered.
+                    </p>
+                    <div class="work-card__tags">
+                      <span>VOID</span><span>ARCHIVE</span><span>LOOP</span>
+                    </div>
+                    <a class="work-card__link" href="https://www.youtube.com/@Lost_in_COMPLEX" target="_blank"
+                      rel="noopener">
+                      <span>VIEW ON YOUTUBE</span>
+                      <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
+                        <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" />
+                      </svg>
+                    </a>
+                    <div class="work-card__thumbs">
+                      <div class="work-card__thumb" style="background-image:url('img/thumb_05a.jpg')"></div>
+                      <div class="work-card__thumb" style="background-image:url('img/thumb_05b.jpg')"></div>
+                      <div class="work-card__thumb" style="background-image:url('img/thumb_05c.jpg')"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div><!-- /.carousel__viewport -->
+
+      <!-- Carousel Controls -->
+      <nav class="carousel__nav">
+        <button class="carousel__btn carousel__btn--prev" id="prevBtn" aria-label="前の作品">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="carousel__dots" id="carouselDots">
+          <button class="carousel__dot active" data-goto="0" aria-label="Work 01"></button>
+          <button class="carousel__dot" data-goto="1" aria-label="Work 02"></button>
+          <button class="carousel__dot" data-goto="2" aria-label="Work 03"></button>
+          <button class="carousel__dot" data-goto="3" aria-label="Work 04"></button>
+          <button class="carousel__dot" data-goto="4" aria-label="Work 05"></button>
+        </div>
+
+        <button class="carousel__btn carousel__btn--next" id="nextBtn" aria-label="次の作品">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </nav>
+
+    </div><!-- /#carousel -->
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__left">
+        <p class="site-footer__name">LOST IN COMPLEX</p>
+        <p class="site-footer__tagline">Dreamcore &nbsp;&middot;&nbsp; Experimental &nbsp;&middot;&nbsp; Visual Arts</p>
+      </div>
+      <div class="site-footer__emblem" aria-hidden="true">
+        <span>L</span><span>I</span><span>C</span>
+      </div>
+      <div class="site-footer__right">
+        <a href="https://www.youtube.com/@Lost_in_COMPLEX" target="_blank" rel="noopener" class="site-footer__yt">
+          YouTube Channel &nearr;
+        </a>
+        <p class="site-footer__copy">&copy; 2026 All Rights Reserved</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./js/smoke.js"></script>
+  <script src="./js/main.js"></script>
+</body>
+
+</html>

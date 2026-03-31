@@ -1,0 +1,1377 @@
+// ================================================================
+// LOST IN COMPLEX — Portfolio SCSS
+// style.scss  (SCSSコンパイル後 style.css として使用)
+// ================================================================
+
+// ----------------------------------------------------------------
+// 1. VARIABLES & TOKENS
+// ----------------------------------------------------------------
+
+// Color palette
+$navy-void: #030810;
+$navy-abyss: #060E1E;
+$navy-deep: #0A1628;
+$navy-base: #0F2040;
+$navy-mid: #162C55;
+$navy-light: #1E3D6E;
+
+// $silver-dark: #3D5470;
+$silver-dark: #8ba8cb;
+$silver-mid: #6A8BAD;
+$silver-base: #9DB4CC;
+$silver-light: #C4D6E8;
+$silver-pale: #E4EEF6;
+$white: #F2F7FC;
+
+$blue-deep: #1A5490;
+$blue-base: #2E7ABF;
+$blue-glow: #4A9EE0;
+$blue-bright: #70C0F5;
+$blue-electric: #9ADEFD;
+
+// Glassmorphism
+$glass-bg: rgba(14, 32, 64, 0.55);
+$glass-border: rgba(180, 210, 240, 0.12);
+$glass-blur: 24px;
+
+// Typography
+$font-display: 'Cinzel', serif;
+$font-ui: 'Rajdhani', sans-serif;
+$font-body: 'Cormorant Garamond', serif;
+
+// Motion
+$ease-silk: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+
+// ----------------------------------------------------------------
+// 2. RESET & BASE
+// ----------------------------------------------------------------
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --navy-void: #{$navy-void};
+  --navy-deep: #{$navy-deep};
+  --silver-pale: #{$silver-pale};
+  --blue-glow: #{$blue-glow};
+  --blue-electric: #{$blue-electric};
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: $blue-deep;
+  color: $silver-pale;
+  font-family: $font-ui;
+  overflow-x: hidden;
+  cursor: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: none;
+}
+
+// ----------------------------------------------------------------
+// 3. THREE.JS CANVAS
+// ----------------------------------------------------------------
+
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+// ----------------------------------------------------------------
+// 4. CUSTOM CURSOR
+// ----------------------------------------------------------------
+
+.cursor {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: $blue-electric;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  transition: transform 0.08s $ease-silk;
+  box-shadow: 0 0 10px $blue-electric, 0 0 20px rgba($blue-glow, 0.5);
+
+  &.is-hovering {
+    transform: translate(-50%, -50%) scale(0.4);
+    background: $white;
+  }
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba($blue-electric, 0.45);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s $ease-silk, width 0.3s $ease-silk, height 0.3s $ease-silk, border-color 0.3s;
+
+  &.is-hovering {
+    width: 60px;
+    height: 60px;
+    border-color: rgba($blue-electric, 0.7);
+  }
+}
+
+// ----------------------------------------------------------------
+// 5. PROGRESS RAIL (Side)
+// ----------------------------------------------------------------
+
+.progress-rail {
+  position: fixed;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+
+    span {
+      font-family: $font-ui;
+      font-size: 7px;
+      letter-spacing: 0.1em;
+      color: $silver-dark;
+    }
+  }
+
+  &__track {
+    position: relative;
+    width: 2px;
+    height: 180px;
+    background: rgba($silver-dark, 0.18);
+    border-radius: 2px;
+    overflow: visible;
+  }
+
+  &__fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, $blue-electric, $blue-glow, rgba($blue-glow, 0.3));
+    border-radius: 2px;
+    transition: height 0.12s linear;
+  }
+
+  &__orb {
+    position: absolute;
+    left: 50%;
+    bottom: 0%;
+    transform: translate(-50%, 50%);
+    width: 8px;
+    height: 8px;
+    background: $blue-electric;
+    border-radius: 50%;
+    transition: bottom 0.12s linear;
+    box-shadow:
+      0 0 6px $blue-electric,
+      0 0 16px $blue-glow,
+      0 0 32px rgba($blue-electric, 0.4);
+    animation: orb-pulse 2.4s ease-in-out infinite;
+  }
+
+  &__index {
+    font-family: $font-ui;
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.5;
+    color: $silver-dark;
+  }
+
+  &__current {
+    display: block;
+    font-size: 13px;
+    color: $blue-electric;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 8px $blue-glow;
+  }
+
+  &__sep {
+    font-size: 8px;
+    opacity: 0.4;
+  }
+
+  &__total {
+    display: block;
+    opacity: 0.4;
+    font-size: 9px;
+  }
+
+  &__ticks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+
+    span {
+      display: block;
+      width: 12px;
+      height: 1px;
+      background: rgba($silver-dark, 0.25);
+
+      &:nth-child(odd) {
+        width: 8px;
+      }
+    }
+  }
+}
+
+@keyframes orb-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 6px $blue-electric, 0 0 16px $blue-glow, 0 0 32px rgba($blue-electric, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 10px $blue-electric, 0 0 28px $blue-glow, 0 0 56px rgba($blue-electric, 0.6);
+  }
+}
+
+// ----------------------------------------------------------------
+// 6. HERO
+// ----------------------------------------------------------------
+
+.hero {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  // --- Ruled line decorations ---
+  &__ruled {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  &__ruled-line {
+    position: absolute;
+    background: rgba($silver-dark, 0.1);
+
+    &--h1 {
+      top: 20%;
+      left: 0;
+      right: 0;
+      height: 1px;
+    }
+
+    &--h2 {
+      bottom: 18%;
+      left: 0;
+      right: 0;
+      height: 1px;
+    }
+
+    &--v1 {
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      transform: translateX(-50%);
+    }
+  }
+
+  // --- Corner coordinates ---
+  &__coord {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    span {
+      display: block;
+      font-family: $font-ui;
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      color: $silver-dark;
+      opacity: 0.6;
+    }
+
+    &--tl {
+      top: 32px;
+      left: 40px;
+    }
+
+    &--br {
+      bottom: 32px;
+      right: 40px;
+      text-align: right;
+    }
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  // --- Main inner content ---
+  &__inner {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 80px 32px;
+    max-width: 960px;
+    width: 100%;
+  }
+
+  // --- Eyebrow ---
+  &__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 52px;
+    opacity: 0;
+
+    &-text {
+      font-family: $font-ui;
+      font-size: 10px;
+      letter-spacing: 0.38em;
+      color: $silver-dark;
+      white-space: nowrap;
+
+      @media (max-width: 600px) {
+        font-size: 8px;
+        letter-spacing: 0.2em;
+      }
+    }
+
+    &-line {
+      flex: 0 0 48px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, $silver-dark);
+
+      &--r {
+        background: linear-gradient(90deg, $silver-dark, transparent);
+      }
+    }
+  }
+
+  // --- Title ---
+  &__title-wrap {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  &__title-bg {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -20px;
+    text-align: center;
+    font-family: $font-display;
+    font-weight: 900;
+    font-size: clamp(72px, 18vw, 260px);
+    letter-spacing: 0.03em;
+    color: rgba($silver-base, 0.05);
+    -webkit-text-stroke: 1px rgba($navy-base, 0);
+    user-select: none;
+    pointer-events: none;
+    z-index: 1;
+    will-change: transform;
+  }
+
+  &__title {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  &__title-row {
+    display: block;
+    font-family: $font-display;
+    font-weight: 900;
+    font-size: clamp(52px, 10vw, 128px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transform: translateY(32px);
+
+    &--a {
+      color: $silver-pale;
+      font-size: clamp(40px, 7.5vw, 96px);
+      letter-spacing: 0.18em;
+    }
+
+    &--b {
+      background: linear-gradient(120deg,
+          $silver-base 0%,
+          $blue-bright 40%,
+          $silver-pale 60%,
+          $blue-electric 80%,
+          $silver-light 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 6s linear infinite;
+      animation-play-state: paused; // starts after GSAP intro
+    }
+  }
+
+  // --- Sub ---
+  &__sub {
+    font-family: $font-body;
+    // font-style: italic;
+    font-size: clamp(15px, 2vw, 20px);
+    color: $silver-mid;
+    letter-spacing: 0.08em;
+    margin-bottom: 56px;
+    opacity: 0;
+
+    &-em {
+      color: $silver-light;
+      font-style: normal;
+      letter-spacing: 0.15em;
+    }
+  }
+
+  // --- Meta row ---
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    margin-bottom: 52px;
+    opacity: 0;
+
+    @media (max-width: 500px) {
+      gap: 20px;
+    }
+
+    &-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    &-val {
+      font-family: $font-display;
+      font-size: clamp(22px, 3vw, 30px);
+      color: $silver-light;
+      letter-spacing: 0.08em;
+      line-height: 1;
+    }
+
+    &-key {
+      font-family: $font-ui;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      color: $silver-dark;
+    }
+
+    &-divider {
+      width: 1px;
+      height: 40px;
+      background: rgba($silver-dark, 0.28);
+    }
+  }
+
+  // --- YouTube button ---
+  &__yt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: $font-ui;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: $silver-mid;
+    padding: 14px 28px;
+    border: 1px solid rgba($silver-dark, 0.3);
+    border-radius: 2px;
+    margin-bottom: 60px;
+    opacity: 0;
+    transition: color 0.4s $ease-silk, border-color 0.4s $ease-silk, box-shadow 0.4s $ease-silk, gap 0.3s;
+
+    &:hover {
+      color: $blue-electric;
+      border-color: rgba($blue-glow, 0.5);
+      box-shadow: 0 0 24px rgba($blue-glow, 0.2), inset 0 0 24px rgba($blue-glow, 0.04);
+      gap: 14px;
+    }
+
+    &-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $blue-glow;
+    }
+
+    &-arrow {
+      opacity: 0.5;
+    }
+  }
+
+  // --- Scroll cue ---
+  &__scroll-cue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+  }
+
+  &__scroll-text {
+    font-family: $font-ui;
+    font-size: 9px;
+    letter-spacing: 0.45em;
+    color: $silver-dark;
+  }
+
+  &__scroll-ticker {
+    width: 1px;
+    height: 56px;
+    background: rgba($silver-dark, 0.2);
+    overflow: hidden;
+    position: relative;
+  }
+
+  &__scroll-ticker-inner {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, $blue-electric, transparent);
+    animation: ticker-scroll 2s ease-in-out infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
+}
+
+@keyframes ticker-scroll {
+  0% {
+    top: -100%;
+  }
+
+  100% {
+    top: 100%;
+  }
+}
+
+// ----------------------------------------------------------------
+// 7. GALLERY
+// ----------------------------------------------------------------
+
+.gallery {
+  position: relative;
+  z-index: 10;
+  padding: 120px 0 160px;
+
+  // Decorative top rule (.gallery__rule DOM要素で管理)
+  &__rule {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba($silver-dark, 0.15) 20%,
+        rgba($silver-dark, 0.15) 80%,
+        transparent 100%);
+    margin-bottom: 120px;
+    transform-origin: left center;
+  }
+
+  // --- Header ---
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    max-width: 1200px;
+    margin: 0 auto 80px;
+    padding: 0 80px;
+
+    @media (max-width: 900px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 32px;
+      padding: 0 32px;
+    }
+  }
+
+  &__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__chapter {
+    font-family: $font-ui;
+    font-size: 10px;
+    letter-spacing: 0.45em;
+    color: $blue-glow;
+    text-shadow: 0 0 12px rgba($blue-glow, 0.5);
+    display: block;
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  &__heading {
+    font-family: $font-display;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: 0.04em;
+    color: $silver-pale;
+    opacity: 0;
+    transform: translateX(-20px);
+
+    em {
+      font-style: normal;
+      // font-style: bold;
+      color: $silver-mid;
+    }
+  }
+
+  &__header-right {
+    text-align: right;
+    opacity: 0;
+    transform: translateX(20px);
+
+    @media (max-width: 900px) {
+      text-align: left;
+    }
+  }
+
+  &__desc {
+    font-family: $font-body;
+    // font-style: italic;
+    font-size: 15px;
+    line-height: 2;
+    color: $silver-dark;
+  }
+
+  &__header-rule {
+    width: 100%;
+    height: 1px;
+    background: rgba($silver-dark, 0.2);
+    margin-top: 20px;
+
+    @media (max-width: 900px) {
+      display: none;
+    }
+  }
+}
+
+// ----------------------------------------------------------------
+// 8. CAROUSEL
+// ----------------------------------------------------------------
+
+.carousel {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  &__viewport {
+    position: relative;
+    min-height: 600px;
+
+    @media (max-width: 900px) {
+      min-height: auto;
+    }
+  }
+
+  &__item {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 80px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0s; // controlled by GSAP
+
+    &.active {
+      position: relative;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 768px) {
+      padding: 0 20px;
+    }
+  }
+
+  // --- Navigation ---
+  &__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 56px;
+    padding: 0 80px;
+
+    @media (max-width: 768px) {
+      padding: 0 20px;
+      gap: 24px;
+    }
+  }
+
+  &__btn {
+    width: 52px;
+    height: 52px;
+    border: 1px solid rgba($silver-dark, 0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $silver-mid;
+    transition: border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.3s;
+
+    &:hover {
+      border-color: rgba($blue-glow, 0.6);
+      color: $blue-electric;
+      box-shadow: 0 0 20px rgba($blue-glow, 0.25);
+      transform: scale(1.08);
+    }
+
+    &:disabled {
+      opacity: 0.25;
+      pointer-events: none;
+    }
+  }
+
+  &__dots {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  &__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba($silver-dark, 0.5);
+    transition: background 0.3s, width 0.4s $ease-expo, border-radius 0.4s, box-shadow 0.4s;
+
+    &.active {
+      width: 28px;
+      border-radius: 3px;
+      background: $blue-electric;
+      box-shadow: 0 0 8px $blue-electric, 0 0 20px rgba($blue-glow, 0.5);
+    }
+  }
+}
+
+// ----------------------------------------------------------------
+// 9. WORK CARD — 3D Glass Effect
+// ----------------------------------------------------------------
+
+.work-card {
+  width: 100%;
+  max-width: 1200px;
+
+  // Perspective wrapper
+  &__perspective {
+    perspective: 1400px;
+    perspective-origin: 48% 44%;
+  }
+
+  // Rotating 3D scene
+  &__inner {
+    position: relative;
+    height: 560px;
+    transform-style: preserve-3d;
+
+    // 3D rotation applied via SCSS + JS will update on mouse move
+    // Base tilt: slightly rotated for depth perception
+    transform: rotateY(-5deg) rotateX(2deg);
+    transition: transform 0.7s $ease-expo;
+
+    @media (max-width: 1024px) {
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      transform: none;
+      gap: 32px;
+    }
+  }
+
+  // ---- Video / Glass Layer (奥 = behind) ----
+  &__glass-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 63%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    transform: translateZ(0px);
+
+    // Inner shadow + border for glass feel
+    box-shadow:
+      0 48px 96px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba($silver-light, 0.07),
+      inset 0 1px 0 rgba($silver-light, 0.08);
+
+    @media (max-width: 1024px) {
+      position: relative;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  &__video-layer {
+    position: absolute;
+    inset: 0;
+    // background: $navy-abyss;
+    background: rgba($navy-abyss, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // video {
+    //   width: 100%;
+    //   height: 100%;
+    //   object-fit: cover;
+    //   display: block;
+    // }
+
+    video {
+      position: absolute; // ← 追加（2枚を重ねるため）
+      // inset: 0; // ← 追加
+      width: 80%;
+      height: 80%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s ease; // ← 追加（クロスフェード）
+    }
+
+  }
+
+  // Frosted glass overlay
+  &__frosted {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    // background: linear-gradient(135deg,
+    //     rgba(255, 255, 255, 0.055) 0%,
+    //     rgba(100, 160, 220, 0.03) 50%,
+    //     rgba(255, 255, 255, 0.02) 100%);
+    // backdrop-filter: blur(3px) saturate(1.3) brightness(0.92);
+    // -webkit-backdrop-filter: blur(3px) saturate(1.3) brightness(0.92);
+    border: 1px solid rgba($silver-light, 0.1);
+    border-radius: 12px;
+  }
+
+  // CRT scan lines
+  &__scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: 12px;
+    pointer-events: none;
+    // background: repeating-linear-gradient(0deg,
+    //     transparent,
+    //     transparent 3px,
+    //     rgba(0, 0, 0, 0.05) 3px,
+    //     rgba(0, 0, 0, 0.05) 4px);
+    opacity: 0.7;
+  }
+
+  // Glass glare highlight
+  &__glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    z-index: 4;
+    // background: linear-gradient(180deg,
+    //     rgba(255, 255, 255, 0.06) 0%,
+    //     transparent 100%);
+    border-radius: 12px 12px 0 0;
+    pointer-events: none;
+  }
+
+  // HUD overlay (corners + labels)
+  &__hud {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  // Corner marks
+  &__corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      background: rgba($blue-electric, 0.8);
+    }
+
+    &::before {
+      width: 100%;
+      height: 1px;
+      top: 0;
+      left: 0;
+    }
+
+    &::after {
+      width: 1px;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    &--tl {
+      top: 14px;
+      left: 14px;
+    }
+
+    &--tr {
+      top: 14px;
+      right: 14px;
+      transform: scaleX(-1);
+    }
+
+    &--bl {
+      bottom: 14px;
+      left: 14px;
+      transform: scaleY(-1);
+    }
+
+    &--br {
+      bottom: 14px;
+      right: 14px;
+      transform: scale(-1);
+    }
+  }
+
+  &__hud-rec {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: $font-ui;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: rgba($blue-electric, 0.7);
+    animation: rec-blink 2.4s ease-in-out infinite;
+  }
+
+  &__hud-idx {
+    position: absolute;
+    bottom: 18px;
+    right: 24px;
+    font-family: $font-ui;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba($silver-mid, 0.5);
+  }
+
+  // ---- Text Panel (手前 = in front, translateZ lifts it) ----
+  &__panel {
+    position: absolute;
+    right: 20px;
+    top: 6%;
+    width: 46%;
+    height: 88%;
+    transform: translateZ(64px);
+
+    background: rgba($navy-abyss, 0.5);
+    // backdrop-filter: blur($glass-blur) saturate(1.2);
+    // -webkit-backdrop-filter: blur($glass-blur) saturate(1.2);
+
+    border: 1px solid $glass-border;
+    border-radius: 10px;
+
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba($silver-light, 0.04),
+      inset 0 1px 0 rgba($silver-light, 0.07);
+
+    display: flex;
+    flex-direction: column;
+    padding: 36px 36px 28px;
+    gap: 0;
+
+    // Left edge glow line
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15%;
+      height: 70%;
+      width: 1px;
+      background: linear-gradient(to bottom,
+          transparent,
+          rgba($blue-glow, 0.5),
+          rgba($blue-electric, 0.3),
+          transparent);
+    }
+
+    @media (max-width: 1024px) {
+      position: relative;
+      width: 100%;
+      height: auto;
+      transform: none;
+      right: 0;
+    }
+  }
+
+  &__num {
+    font-family: $font-display;
+    font-size: 80px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba($silver-dark, 0.75);
+    user-select: none;
+    margin-bottom: 8px;
+  }
+
+  &__panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-size: clamp(20px, 2.8vw, 30px);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: $silver-pale;
+    line-height: 1.1;
+  }
+
+  &__meta {
+    font-family: $font-ui;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: $blue-glow;
+  }
+
+  &__desc {
+    font-family: $font-body;
+    // font-style: italic;
+    font-size: 15px;
+    line-height: 1.85;
+    color: $silver-mid;
+  }
+
+  &__tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    span {
+      font-family: $font-ui;
+      font-size: 8px;
+      letter-spacing: 0.25em;
+      color: $silver-dark;
+      border: 1px solid rgba($silver-dark, 0.22);
+      padding: 4px 10px;
+      border-radius: 2px;
+      transition: border-color 0.3s, color 0.3s;
+
+      &:hover {
+        border-color: rgba($blue-glow, 0.4);
+        color: $silver-mid;
+      }
+    }
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: $font-ui;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    color: $blue-electric;
+    padding: 14px 0;
+    border-top: 1px solid rgba($silver-dark, 0.15);
+    margin-top: auto;
+    transition: gap 0.3s $ease-silk, color 0.3s;
+    text-shadow: 0 0 8px rgba($blue-electric, 0.4);
+
+    &:hover {
+      color: $white;
+      gap: 12px;
+    }
+  }
+
+  // Thumbnail strip
+  &__thumbs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  &__thumb {
+    aspect-ratio: 16 / 9;
+    border-radius: 4px;
+    background: $navy-base;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba($silver-dark, 0.18);
+    transition: border-color 0.3s, transform 0.3s $ease-silk;
+    overflow: hidden;
+
+    &:hover {
+      border-color: rgba($blue-glow, 0.4);
+      transform: scale(1.04);
+    }
+  }
+}
+
+@keyframes rec-blink {
+
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+// ----------------------------------------------------------------
+// 10. FOOTER
+// ----------------------------------------------------------------
+
+.site-footer {
+  position: relative;
+  z-index: 10;
+  padding: 60px 0;
+  border-top: 1px solid rgba($silver-dark, 0.12);
+
+  &__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 36px;
+      padding: 0 32px;
+      text-align: center;
+    }
+  }
+
+  &__name {
+    font-family: $font-display;
+    font-size: 16px;
+    letter-spacing: 0.18em;
+    color: $silver-pale;
+    margin-bottom: 6px;
+  }
+
+  &__tagline {
+    font-family: $font-body;
+    // font-style: italic;
+    font-size: 12px;
+    color: $silver-dark;
+    letter-spacing: 0.05em;
+  }
+
+  &__emblem {
+    display: flex;
+    gap: 3px;
+
+    span {
+      font-family: $font-display;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: rgba($silver-dark, 0.3);
+    }
+  }
+
+  &__right {
+    text-align: right;
+
+    @media (max-width: 768px) {
+      text-align: center;
+    }
+  }
+
+  &__yt {
+    display: block;
+    font-family: $font-ui;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: $silver-mid;
+    margin-bottom: 8px;
+    transition: color 0.3s;
+
+    &:hover {
+      color: $blue-electric;
+    }
+  }
+
+  &__copy {
+    font-family: $font-ui;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: $silver-dark;
+    opacity: 0.5;
+  }
+}
+
+// ----------------------------------------------------------------
+// 11. JS ANIMATION HELPERS
+// ----------------------------------------------------------------
+
+.js-fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.js-reveal {
+  opacity: 0;
+  transform: translateX(-16px);
+
+  &:nth-child(even) {
+    transform: translateX(16px);
+  }
+}
+
+// ----------------------------------------------------------------
+// 12. RESPONSIVE ADJUSTMENTS
+// ----------------------------------------------------------------
+
+@media (max-width: 768px) {
+  .hero {
+    &__coord {
+      display: none;
+    }
+
+    &__title-row--a {
+      font-size: 11vw;
+    }
+
+    &__title-row--b {
+      font-size: 15vw;
+    }
+  }
+
+  .gallery {
+    padding: 80px 0 120px;
+
+    &__header {
+      margin-bottom: 48px;
+    }
+  }
+
+  .carousel {
+    &__viewport {
+      min-height: auto;
+    }
+
+    &__item {
+      padding: 0 16px;
+    }
+  }
+
+  .work-card {
+    &__perspective {
+      perspective: none;
+    }
+
+    &__inner {
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      transform: none !important;
+    }
+
+    &__glass-wrap {
+      position: relative;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+
+    &__panel {
+      position: relative;
+      width: 100%;
+      height: auto;
+      transform: none !important;
+    }
+
+    &__num {
+      font-size: 56px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .work-card {
+    &__thumbs {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
