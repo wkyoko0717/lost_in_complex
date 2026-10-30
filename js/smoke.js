@@ -52,7 +52,7 @@ const animate = () => {
         loader.crossOrigin = '';
 
         loader.load(
-            'https://s3-us-west-2.amazonaws.com/s.cdpn.io/82015/blue-smoke.png',
+            './images/blue-smoke.png',
             function onLoad(texture) {
                 const smokeGeo = new THREE.PlaneBufferGeometry(300, 300);
 
